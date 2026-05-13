@@ -1,0 +1,26 @@
+{
+  "name": "nexusq-mcp",
+  "version": "1.0.0",
+  "description": "MCP Server for Nexus-Q Compiler",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "nexusq-mcp": "./build/index.js"
+  },
+  "files": [
+    "build",
+    "bin"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
