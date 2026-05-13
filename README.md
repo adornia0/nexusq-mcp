@@ -22,7 +22,7 @@ You don't need to download anything manually. You can run this MCP directly from
       "command": "npx",
       "args": [
         "-y",
-        "github:YOUR_GITHUB_USERNAME/nexusq-mcp"
+        "github:adornia0/nexusq-mcp"
       ]
     }
   }
