@@ -51,6 +51,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 }
             },
             {
+                name: "nexusq_compile",
+                description: "Compile a Nexus-Q script or directory to validate its syntax. This does not run the script.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        targetPath: {
+                            type: "string",
+                            description: "Absolute or relative path to the .n6q script file or directory."
+                        }
+                    },
+                    required: ["targetPath"]
+                }
+            },
+            {
                 name: "nexusq_run",
                 description: "Run an existing Nexus-Q script file.",
                 inputSchema: {
@@ -112,6 +126,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         else if (toolName === "nexusq_version") {
             const { stdout, stderr } = await execAsync(`"${NEXUSQ_BIN}" --version`);
             return { content: [{ type: "text", text: stdout || stderr }] };
+        }
+        else if (toolName === "nexusq_compile") {
+            const targetPath = args.targetPath;
+            try {
+                const { stdout, stderr } = await execAsync(`"${NEXUSQ_BIN}" compile "${targetPath}"`);
+                return { content: [{ type: "text", text: stdout || stderr }] };
+            }
+            catch (e) {
+                return { content: [{ type: "text", text: `Compilation Error:\n${e.message}\n\nStdout: ${e.stdout}\nStderr: ${e.stderr}` }], isError: true };
+            }
         }
         else if (toolName === "nexusq_run") {
             const scriptPath = args.scriptPath;

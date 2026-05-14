@@ -8,6 +8,8 @@ This server allows AI agents (like Claude Desktop, Cursor, and Roo Code) to inte
 
 - `nexusq_docs`: Fetches the official AI-optimized Nexus-Q manual.
 - `nexusq_examples`: Retrieves official implementation patterns and examples.
+- `nexusq_version`: Gets the current version of the Nexus-Q compiler.
+- `nexusq_compile`: Compiles a Nexus-Q `.n6q` script or directory to validate syntax without executing it.
 - `nexusq_run`: Executes a Nexus-Q `.n6q` script locally. Supports injecting a JSON payload and custom database configurations.
 - `nexusq_serve`: Starts the Nexus-Q Quantum Web Host to serve a directory of microservices as a RESTful API.
 
