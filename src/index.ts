@@ -67,6 +67,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             targetPath: {
               type: "string",
               description: "Absolute or relative path to the .n6q script file or directory."
+
             }
           },
           required: ["targetPath"]
