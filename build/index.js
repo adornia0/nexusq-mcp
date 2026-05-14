@@ -43,6 +43,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 }
             },
             {
+                name: "nexusq_version",
+                description: "Get the current version of the Nexus-Q compiler.",
+                inputSchema: {
+                    type: "object",
+                    properties: {},
+                }
+            },
+            {
                 name: "nexusq_run",
                 description: "Run an existing Nexus-Q script file.",
                 inputSchema: {
@@ -99,6 +107,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         else if (toolName === "nexusq_examples") {
             const { stdout, stderr } = await execAsync(`"${NEXUSQ_BIN}" --examples`);
+            return { content: [{ type: "text", text: stdout || stderr }] };
+        }
+        else if (toolName === "nexusq_version") {
+            const { stdout, stderr } = await execAsync(`"${NEXUSQ_BIN}" --version`);
             return { content: [{ type: "text", text: stdout || stderr }] };
         }
         else if (toolName === "nexusq_run") {
