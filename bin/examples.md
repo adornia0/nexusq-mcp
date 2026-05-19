@@ -88,6 +88,19 @@
   _           → ⇑ "Stato sconosciuto: " + stato
 ⟩
 
+!PATTERN: COMPOUND_LOGIC
+!FILE: logic_demo.n6q
+∆payload: ∇
+⊢ payload {voto: "Int", lode: "Bool"}
+// ASCII comparison: >=, <=, >, < (never ≥ or ≤)
+// Unicode logic: ∧ (AND), ∨ (OR), ¬ (NOT)
+⟨ payload.voto < 18 ∨ payload.voto > 30 | ⇑ "Voto fuori range 18-30" ⟩
+⟨ payload.voto < 30 ∧ payload.lode | ⇑ "Lode solo con voto 30" ⟩
+∆is_valid: payload.voto >= 18 ∧ payload.voto <= 30
+∆has_honors: payload.voto ≡ 30 ∧ payload.lode
+∆label: ⟨ ¬has_honors | "Standard" | "Cum Laude" ⟩
+⮑ {valid: is_valid, honors: has_honors, label: label}
+
 !PATTERN: CRUD_OPERATIONS
 !FILE: crud.n6q
 ⊕Prodotti["P-001"]{nome: "Widget", prezzo: 100, attivo: True}
@@ -145,6 +158,32 @@
 ⊢ payload {nome: "String", cognome: "String", email: "String", eta: "Int"}
 ⊕Utente[payload.email]{ nome: payload.nome, eta: payload.eta }
 ⮑ "Valid and inserted"
+
+!PATTERN: VALIDATED_CRUD
+!FILE: validated_crud.n6q
+∆payload: ∇
+// Validate + business rules + insert with error handling
+⊢ payload {nome: "String", prezzo: "Float", categoria: "String"}
+⟨ payload.prezzo <= 0 | ⇑ "Prezzo deve essere positivo" ⟩
+⟨ payload.nome ∋ " " ∧ |payload.nome| < 3 | ⇑ "Nome troppo corto" ⟩
+∆id: ⌖
+¿ ⟨
+  ⊕Prodotti[id]{nome: payload.nome, prezzo: payload.prezzo, cat: payload.categoria, attivo: True}
+⟩ ! ⟨
+  ⮑ {status: "error", message: ε}
+⟩
+⮑ {status: "created", id: id}
+
+!PATTERN: MULTI_FILTER
+!FILE: multi_filter.n6q
+∆payload: ∇
+∆tutti: ⌕Prodotti[*]
+// Filter with compound logic: ∧ (AND), ∨ (OR), ¬ (NOT)
+∆attivi_costosi: ⋈ tutti [p | p.attivo ∧ p.prezzo > 50]
+∆scontabili: ⋈ tutti [p | p.prezzo >= 10 ∧ p.prezzo <= 100 ∧ ¬p.in_promo]
+∆cat_match: ⋈ tutti [p | p.cat ≡ "Elettronica" ∨ p.cat ≡ "Accessori"]
+∆ordinati: ⇵ attivi_costosi [p | p.prezzo]
+⮑ {costosi: |attivi_costosi|, scontabili: scontabili, categorie: cat_match, top: ✂ ordinati [0, 3]}
 
 !PATTERN: TIMESTAMPS_AND_UUID
 !FILE: identity.n6q

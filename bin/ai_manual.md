@@ -53,15 +53,21 @@
 /|Div|Math|e / e|Int/Float
 %|Mod|Math|e % e|Int
 ??|NullCoal|Core|x ?? d|Value
->|<|>=|<=|Compare|Logic|x > y|Bool
-≡|≠|Equality|Logic|x ≡ y|Bool
-∧|∨|¬|Logic|Logic|x ∧ y|Bool
+>|GreaterThan|Logic|x > y|Bool
+<|LessThan|Logic|x < y|Bool
+>=|GreaterOrEqual|Logic|x >= y|Bool (ASCII only, no Unicode ≥)
+<=|LessOrEqual|Logic|x <= y|Bool (ASCII only, no Unicode ≤)
+≡|Equal|Logic|x ≡ y|Bool
+≠|NotEqual|Logic|x ≠ y|Bool
+∧|And|Logic|x ∧ y|Bool
+∨|Or|Logic|x ∨ y|Bool
+¬|Not|Logic|¬expr|Bool (unary prefix negation)
 
 !AXIOMS
 [WEB_HOST] Scripts under `nexusq serve` are stateless REST endpoints. POST body auto-injects to `∇`. `⮑` yields HTTP 200. `⇑` or `∃` yields HTTP 400. Zero controllers.
 [DB_LAZY_LOAD] `nexus.config.json` lazy-loads ONLY on first `⊕`,`⌕`,`⊗`,`∅`. Scripts doing math/HTTP require no config.
 [LAMBDA_ISOLATION] `λ` runs target script in strict isolated variable scope, BUT shares the global DB connection.
-[ERROR_FLOW] Any panic (`∃` on ⊥, `⇑`, TypeMismatch) jumps execution to `!`. Error string is securely bound to system variable `ε`.
+[ERROR_FLOW] `⇑` (Throw) is designed to be caught by `!` (Catch). Uncaught `⇑` or `∃` on `⊥` → HTTP 400 in web host, panic in CLI. Error string is bound to `ε` inside `!`. Pattern: `¿ ⟨ ⇑ "msg" ⟩ ! ⟨ ⮑ ε ⟩`. Always wrap risky operations in `¿!`.
 [AUTO_PROMOTION] Arithmetic with Int and Float auto-promotes result to Float.
 [UPSERT_PATTERN] Canonical paradigm is `¿ ⟨ ⊕T[id]{...} ⟩ ! ⟨ ⊗T[id]{...} ⟩`.
 [VALIDATION] `⊢ obj {f1, f2: "Type"}` supports types: "String", "Int", "Float", "Bool", "Array", "Object". Throws on mismatch.
@@ -72,6 +78,8 @@
 [MATCHING] `⎇ expr ⟨ v → stmt | _ → stmt ⟩`. `_ →` is default. No fall-through.
 [FILE_PATHS] Implicitly assume `.n6q` extension unless specified. No package managers or `.csproj` equivalents.
 [HTTP_REQ] `⊳` evaluates body objects sequentially to JSON. E.g., `⊳ "url" {method: "POST", body: {k: v}}`.
+[COMPARISON_OPS] Comparison uses ASCII: `>`, `<`, `>=`, `<=`. There are NO Unicode equivalents (no ≥ or ≤). Equality uses Unicode: `≡` (equal), `≠` (not equal).
+[LOGIC_OPS] Boolean logic: `∧` (AND), `∨` (OR), `¬` (unary NOT prefix). All three are fully supported. Example: `⟨ x > 10 ∧ x < 100 | ... ⟩` or `⟨ ¬flag ∨ count ≡ 0 | ... ⟩`.
 [TYPES] Literal types: `⊥` (Null), `100` (Int), `19.99` (Float), `True`/`False` (Bool), `"str"` (String), `{k:v}` (Object), `[1,2]` (Array).
 
 !DATABASE_SCHEMA (nexus.config.json)
