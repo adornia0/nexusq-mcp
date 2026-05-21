@@ -4,7 +4,7 @@
 ∆|Assign|Core|∆var: value|void
 ⮑|Return|Core|⮑ expr (or ⇒)|halts_and_returns
 ∇|Ingest|Core|∇|Object(Payload)
-∃|Assert|Core|∃var|throws:404_if_Null
+∃|Assert|Core|∃var|throws:"Assertion failed: 'var' is Null or not found"
 ⇑|Throw|Core|⇑ "msg"|throws:Custom
 ⊥|Null|Literal|⊥|Null
 ⊕|Insert|DB|⊕Table[id]{obj}|throws:IfExists
@@ -52,6 +52,7 @@
 *|Mul|Math|e * e|Int/Float
 /|Div|Math|e / e|Int/Float
 %|Mod|Math|e % e|Int
+()|Grouping|Math/Logic|(expr)|Value — operator precedence grouping
 ??|NullCoal|Core|x ?? d|Value
 >|GreaterThan|Logic|x > y|Bool
 <|LessThan|Logic|x < y|Bool
@@ -81,6 +82,8 @@
 [COMPARISON_OPS] Comparison uses ASCII: `>`, `<`, `>=`, `<=`. There are NO Unicode equivalents (no ≥ or ≤). Equality uses Unicode: `≡` (equal), `≠` (not equal).
 [LOGIC_OPS] Boolean logic: `∧` (AND), `∨` (OR), `¬` (unary NOT prefix). All three are fully supported. Example: `⟨ x > 10 ∧ x < 100 | ... ⟩` or `⟨ ¬flag ∨ count ≡ 0 | ... ⟩`.
 [TYPES] Literal types: `⊥` (Null), `100` (Int), `19.99` (Float), `True`/`False` (Bool), `"str"` (String), `{k:v}` (Object), `[1,2]` (Array).
+[PARENTHESES] Use `(expr)` to group sub-expressions and control operator precedence. E.g. `(a + b) * c`, `(x ∧ y) ∨ z`, `((a + 1) % 7)`. Parentheses nest freely.
+[ASSERT_MSG] `∃var` now reports the variable name: `"Assertion failed: 'varname' is Null or not found"`. Use inside `¿!` for structured error handling.
 
 !DATABASE_SCHEMA (nexus.config.json)
 Must follow exactly:

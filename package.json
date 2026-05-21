@@ -1,6 +1,6 @@
 {
   "name": "nexusq-mcp",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "MCP Server for Nexus-Q Compiler",
   "main": "build/index.js",
   "type": "module",

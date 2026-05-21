@@ -38,7 +38,7 @@
 !PATTERN: ASSERT_EXISTENCE
 !FILE: assert.n6q
 ∆missing: ⌕Products["P-999"]
-∃missing // Panics immediately if Null, jumps to Catch block or returns 400
+∃missing // Throws "Assertion failed: 'missing' is Null or not found" — catchable by ¿!
 
 !PATTERN: FOREACH_LOOP
 !FILE: import.n6q
@@ -224,3 +224,32 @@
 ∆discount: ⟨ label ≡ "adult" | 0.1 | 0.0 ⟩
 ∆msg: ⟨ age > 0 | "Age: " + age | "No age provided" ⟩
 ⮑ {label: label, discount: discount, message: msg}
+
+!PATTERN: PARENTHESIZED_EXPRESSIONS
+!FILE: parens.n6q
+∆curr: 5
+// Parentheses control operator precedence — no need for temp variables
+∆dow: (curr + 1) % 7
+∆area: (3 + 4) * (10 - 2)
+∆nested: ((2 + 3) * (4 - 1)) + 1
+// Parentheses with logical operators
+∆a: true
+∆b: false
+∆c: true
+∆logic: (a ∧ b) ∨ c
+// Combine with ternary and comparison
+∆score: 85
+∆grade: ⟨ score >= 90 | "A" | ⟨ score >= (50 + 30) | "B" | "C" ⟩ ⟩
+⮑ {dow: dow, area: area, nested: nested, logic: logic, grade: grade}
+
+!PATTERN: ASSERT_WITH_TRY
+!FILE: safe_assert.n6q
+// ∃ now reports which variable failed — use inside ¿! for graceful handling
+∆user: ⌕Users["U-999"]
+¿ ⟨
+  ∃user
+  ⮑ user
+⟩ ! ⟨
+  // ε will contain: "Assertion failed: 'user' is Null or not found"
+  ⮑ {status: "error", message: ε}
+⟩
